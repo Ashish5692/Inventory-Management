@@ -30,7 +30,7 @@ export default class ProductController {
 
   getUpdateProductView(req, res, next) {
     //1. if product exist then return view
-    const id =  req.params.id; ///can access url id parameters defined in index file(route)
+    const id = req.params.id; ///can access url id parameters defined in index file(route)
     const productFound = ProductModel.getById(id);
     if (productFound) {
       res.render("update-product", {
@@ -48,6 +48,17 @@ export default class ProductController {
     ProductModel.update(req.body);
     let products = ProductModel.get();
     res.render("products", { products: products }); //send user back to product page after adding new product
-  
+  }
+
+  deleteProduct(req, res) {
+    const id = req.params.id;
+    const productFound = ProductModel.getById(id);
+    if (!productFound) {
+      return res.status(401).send("Product Not Found");
+    }
+
+    ProductModel.delete(id);
+    let products = ProductModel.get();
+    res.render("products", { products });
   }
 }

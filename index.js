@@ -6,6 +6,8 @@ import validationMiddlewares from "./src/middlewares/validation.middlewares.js";
 
 const server = express();
 
+server.use(express.static('public')) //so that our js file can be directly accessed in our views
+
 //parse form data so that we can see it inside req body
 server.use(express.urlencoded({ extended: true }));
 
@@ -22,6 +24,7 @@ server.get("/new", productController.getAddForm);
 server.get("/update-product/:id", productController.getUpdateProductView); //id is URL parameter
 server.post("/", validationMiddlewares, productController.addNewProduct);
 server.post("/update-product", productController.postUpdateProduct);
+server.post("/delete-product/:id", productController.deleteProduct);
 
 server.use(express.static("src/views"));
 
