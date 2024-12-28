@@ -3,10 +3,11 @@ import ProductController from "./src/controllers/product.controller.js";
 import ejsLayouts from "express-ejs-layouts";
 import path from "path";
 import validationMiddlewares from "./src/middlewares/validation.middlewares.js";
+import { uploadFile } from "./src/middlewares/file-upload.middleware.js";
 
 const server = express();
 
-server.use(express.static('public')) //so that our js file can be directly accessed in our views
+server.use(express.static("public")); //so that our js file can be directly accessed in our views
 
 //parse form data so that we can see it inside req body
 server.use(express.urlencoded({ extended: true }));
@@ -22,7 +23,12 @@ const productController = new ProductController();
 server.get("/", productController.getProducts);
 server.get("/new", productController.getAddForm);
 server.get("/update-product/:id", productController.getUpdateProductView); //id is URL parameter
-server.post("/", validationMiddlewares, productController.addNewProduct);
+server.post(
+  "/",
+  uploadFile.single('imageUrl'), // telling that you will find file inside imageUrl field of form
+  validationMiddlewares,
+  productController.addNewProduct
+);
 server.post("/update-product", productController.postUpdateProduct);
 server.post("/delete-product/:id", productController.deleteProduct);
 

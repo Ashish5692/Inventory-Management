@@ -23,7 +23,9 @@ export default class ProductController {
   addNewProduct(req, res, next) {
     //access data from form
     //console.log(req.body);
-    ProductModel.add(req.body);
+    const { name, desc, price } = req.body;
+    const imageUrl = "images/" + req.file.filename; //name of the file which multer has saved
+    ProductModel.add(name, desc, price, imageUrl);
     let products = ProductModel.get();
     res.render("products", { products: products }); //send user back to product page after adding new product
   }
