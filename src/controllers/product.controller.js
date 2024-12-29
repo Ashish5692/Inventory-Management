@@ -9,7 +9,7 @@ export default class ProductController {
 
     //specify name of your template and don't specify complete path as we have specified that in our index.js
     //then in data specify products , use same key inside products.ejs also
-    res.render("products", { products });
+    res.render("products", { products, userEmail: req.session.userEmail });
 
     // return res.sendFile(
     //   path.join(path.resolve(), "src", "views", "products.html")
@@ -17,7 +17,7 @@ export default class ProductController {
   }
 
   getAddForm(req, res, next) {
-    res.render("new-product", { errorMessage: null });
+    res.render("new-product", { errorMessage: null,  userEmail: req.session.userEmail });
   }
 
   addNewProduct(req, res, next) {
@@ -27,7 +27,7 @@ export default class ProductController {
     const imageUrl = "images/" + req.file.filename; //name of the file which multer has saved
     ProductModel.add(name, desc, price, imageUrl);
     let products = ProductModel.get();
-    res.render("products", { products: products }); //send user back to product page after adding new product
+    res.render("products", { products,  userEmail: req.session.userEmail }); //send user back to product page after adding new product
   }
 
   getUpdateProductView(req, res, next) {
@@ -38,6 +38,7 @@ export default class ProductController {
       res.render("update-product", {
         product: productFound,
         errorMessage: null,
+        userEmail: req.session.userEmail
       });
     }
     //2. else return errors
@@ -49,7 +50,7 @@ export default class ProductController {
   postUpdateProduct(req, res) {
     ProductModel.update(req.body);
     let products = ProductModel.get();
-    res.render("products", { products: products }); //send user back to product page after adding new product
+    res.render("products", { products}); //send user back to product page after adding new product
   }
 
   deleteProduct(req, res) {
