@@ -7,10 +7,14 @@ import validationMiddlewares from "./src/middlewares/validation.middlewares.js";
 import { uploadFile } from "./src/middlewares/file-upload.middleware.js";
 import session from "express-session";
 import { auth } from "./src/middlewares/auth.middleware.js";
+import cookieParser from "cookie-parser";
+import { setLastVisit } from "./src/middlewares/lastVisit.middleware.js";
 
 const server = express({});
 
 server.use(express.static("public")); //so that our js file can be directly accessed in our views
+server.use(cookieParser()); //job of parsing the data of cookie from req to res and res to req 
+server.use(setLastVisit);
 
 //configuring session
 server.use(session({
@@ -39,7 +43,7 @@ server.get('/login', usersController.getLogin);
 server.post('/login', usersController.postLogin);
 server.get('/logout', usersController.logout);
 server.post('/register', usersController.postRegister);
-server.get("/",auth, productController.getProducts);
+server.get("/", setLastVisit ,auth, productController.getProducts);
 server.get("/new",auth, productController.getAddForm);
 server.get("/update-product/:id",auth, productController.getUpdateProductView); //id is URL parameter
 server.post(
